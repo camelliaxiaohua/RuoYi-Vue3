@@ -1,6 +1,7 @@
 import { createWebHistory, createRouter } from 'vue-router'
 /* Layout */
 import Layout from '@/layout'
+//import { constantRoutes } from './router'; 
 
 /**
  * Note: 路由配置项
@@ -127,6 +128,31 @@ export const dynamicRoutes = [
         component: () => import('@/views/system/dict/data'),
         name: 'Data',
         meta: { title: '字典数据', activeMenu: '/system/dict' }
+      }
+    ]
+  },
+  {
+    path: '/housdata/users',
+    component: Layout, // 使用 Layout 作为主布局组件
+    hidden: true,
+    permissions: ['housdata:users:list'],
+    children: [
+      {
+        path: '', // 当 path 为 '' 时，访问 /housdata/users 自动加载 index.vue
+        component: () => import('@/views/housdata/users/index'), // 加载主页面 index.vue
+        name: 'UserIndex',
+        meta: { title: '用户列表', activeMenu: '/housdata/users' }
+      },
+      {
+        path: 'datas/:identityId(\\d+)', // 动态参数 :identityId，且为数字格式
+        component: () => import('@/views/housdata/users/datas'), // 子页面 datas.vue
+        name: 'UserData',
+        meta: { title: '用户身份列表', activeMenu: '/housdata/users' },
+        //props: true // 通过 props 将 :identityId 传递给组件
+        props: (route) => ({ 
+          identityId: route.params.identityId,
+          username: route.query.username // 通过查询参数获取姓名
+        }) // 通过 props 将 :identityId 和姓名传递给组件
       }
     ]
   },
